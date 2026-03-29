@@ -9,12 +9,12 @@ const session = require("express-session");
 const PORT = process.env.PORT || 3000;
 
 const app = express();
-const uri = process.env.MONGO_URI;
+const uri = process.env.MONGO_URI || "mongodb+srv://alfiankalani_db_user:manajemeninfobio@mib-uts.e3tztgr.mongodb.net/?appName=mib-uts";
 const client = new MongoClient(uri);
 
 // Middleware to parse JSON and serve HTML files
 app.listen(PORT, () => console.log(`Server running on ${PORT}`));
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+app.use(cors({ origin: process.env.FRONTEND_ORIGIN || 'http://localhost:3000', credentials: true }));
 app.use(express.json());
 app.use(express.static("public"));
 app.use(session({
@@ -122,5 +122,3 @@ async function connectDB() {
   console.log("Connected to MongoDB");
 }
 connectDB();
-
-app.listen(3000, () => console.log("Server running on http://localhost:3000"));
