@@ -3,6 +3,7 @@
 // ══════════════════════════════════════════════════════════════
 const STORAGE_KEY   = 'medcoreData_v2';   // data utama (BOR, ALOS, finance, dll)
 const DB_KEY        = 'medcore_visits';   // data khusus readmission
+const API_BASE = window.location.origin;
 
 const MONTHS      = ['Januari','Februari','Maret','April','Mei','Juni'];
 const MONTH_NUMS  = [1,2,3,4,5,6];
@@ -282,7 +283,7 @@ function renderServicePage() {
 
 async function fetchWaitFromMongo() {
     try {
-        const res = await fetch('http://localhost:3000/data', { credentials: 'include' });
+        const res = await fetch('${API_BASE}/data', { credentials: 'include' });
         if (!res.ok) throw new Error('Server error');
         const mongoData = await res.json();
         const local = getData();
@@ -619,7 +620,7 @@ function renderHRPage() {
 
 async function fetchHRFromMongo() {
     try {
-        const res = await fetch('http://localhost:3000/data', { credentials: 'include' });
+        const res = await fetch('${API_BASE}/data', { credentials: 'include' });
         if (!res.ok) throw new Error('Server error');
         const mongoData = await res.json();
         // Merge with localStorage (localStorage may have records not yet in mongo)
@@ -1251,7 +1252,7 @@ async function deleteEntry(idx){
     // Delete from MongoDB if record has a MongoDB _id
     if(mongoId){
         try{
-            await fetch(`http://localhost:3000/delete/${mongoId}`,{method:'DELETE'});
+            await fetch(`${API_BASE}/delete/${mongoId}`,{method:'DELETE'});
             console.log('MongoDB delete success');
         }catch(err){
             console.warn('MongoDB delete failed (local delete still applied):',err.message);
@@ -1294,7 +1295,7 @@ async function handleSubmit(e){
   try {
     if (existingMongoId) {
       // UPDATE existing record in MongoDB
-      const res = await fetch(`http://localhost:3000/update/${existingMongoId}`, {
+      const res = await fetch(`${API_BASE}/update/${existingMongoId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -1304,7 +1305,7 @@ async function handleSubmit(e){
       console.log('MongoDB update success:', existingMongoId);
     } else {
     // INSERT new record in MongoDB
-    const res = await fetch('http://localhost:3000/insert', {
+    const res = await fetch('${API_BASE}/insert', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -1423,7 +1424,7 @@ async function submitLogin() {
     const password = document.getElementById('loginPassword').value;
     const errEl = document.getElementById('loginError');
     try {
-        const res = await fetch('http://localhost:3000/login', {
+        const res = await fetch('${API_BASE}/login', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             credentials: 'include', body: JSON.stringify({ username, password })
         });
@@ -1441,14 +1442,14 @@ async function submitLogin() {
 }
 
 async function doLogout() {
-    await fetch('http://localhost:3000/logout', { method: 'POST', credentials: 'include' });
+    await fetch('${API_BASE}/logout', { method: 'POST', credentials: 'include' });
     isAdmin = false;
     showLoginPage();
 }
 
 async function checkSession() {
     try {
-        const res = await fetch('http://localhost:3000/me', { credentials: 'include' });
+        const res = await fetch('${API_BASE}/me', { credentials: 'include' });
         const data = await res.json();
         if (data.isAdmin) { isAdmin = true; showDashboard(); }
         else { showLoginPage(); }
