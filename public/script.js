@@ -215,7 +215,7 @@ function renderHomeWaitChart() {
             datasets:[{
                 label:'Menit',
                 data:vals,
-                backgroundColor: vals.map(v => v > 30 ? '#F76B4F' : '#4F7EF7'),
+                backgroundColor: vals.map(v => v > 60 ? '#F76B4F' : '#4F7EF7'),
                 borderRadius:5}]
             },
             options:{...baseOpts(),indexAxis:'y',scales:{x:{grid:{display:false}},y:{grid:{display:false}}}}});
@@ -407,12 +407,12 @@ function renderServicePageWithData(inputData) {
 
     // ── Chart 3: Wait Time per Poli (bar + target line) ──────────
     const waitVals   = poliFilter.map(p => poliData[p].waitTime);
-    const waitColors = waitVals.map(v => v > 30 ? '#F76B4F' : v === 30 ? '#FBBF24' : '#34C98F');
+    const waitColors = waitVals.map(v => v > 60 ? '#F76B4F' : '#34C98F');
     makeOrUpdate('s-waitChart', {
         type: 'bar',
         data: { labels: poliFilter, datasets: [
             { label: 'Waktu Tunggu (Menit)', data: waitVals, backgroundColor: waitColors, borderRadius: 5 },
-            { label: 'Target (30 menit)', data: poliFilter.map(() => 30), type: 'line',
+            { label: 'Target (60 menit)', data: poliFilter.map(() => 60), type: 'line',
               borderColor: '#F76B4F', borderDash: [6, 4], borderWidth: 2, pointRadius: 0, fill: false }
         ]},
         options: { responsive: true, maintainAspectRatio: false,
@@ -444,9 +444,9 @@ function renderServicePageWithData(inputData) {
     const waitTbody = document.getElementById('svc-wait-tbody');
     if (waitTbody) waitTbody.innerHTML = poliFilter.map((p, i) => {
         const val = waitVals[i];
-        const status = val > 30
+        const status = val > 60
             ? '<span class="td-pill" style="background:#FEF2F2;color:#DC2626">Melebihi Target</span>'
-            : val === 30
+            : val === 60
             ? '<span class="td-pill" style="background:#FFFBEB;color:#D97706">Batas Target</span>'
             : '<span class="td-pill" style="background:#ECFDF5;color:#059669">Tercapai</span>';
         return `<tr><td>${p}</td><td>${val} menit</td><td>${status}</td></tr>`;
@@ -463,7 +463,7 @@ function renderServicePageWithData(inputData) {
     const minWait     = Math.min(...allWait);
     const maxWaitPoli = POLI_LIST[allWait.indexOf(maxWait)];
     const minWaitPoli = POLI_LIST[allWait.indexOf(minWait)];
-    const poliOverTarget = POLI_LIST.filter(p => poliData[p].waitTime > 30);
+    const poliOverTarget = POLI_LIST.filter(p => poliData[p].waitTime > 60);
     const totalNewPat = POLI_LIST.reduce((s, p) => s + poliData[p].newPatients, 0);
 
     // Status kepuasan keseluruhan
@@ -475,8 +475,8 @@ function renderServicePageWithData(inputData) {
 
     // Status waktu tunggu
     const waitStatus = poliOverTarget.length === 0
-        ? `Seluruh poli berhasil memenuhi target waktu tunggu &lt;30 menit, dengan waktu tunggu terbaik di <strong style="color:#fff">${minWaitPoli}</strong> (${minWait} menit).`
-        : `<strong style="color:#F76B4F">${poliOverTarget.length} poli</strong> melebihi target waktu tunggu &lt;30 menit: <strong style="color:#fff">${poliOverTarget.join(', ')}</strong>. Waktu tunggu terlama di <strong style="color:#fff">${maxWaitPoli}</strong> (${maxWait} menit).`;
+        ? `Seluruh poli berhasil memenuhi target waktu tunggu &lt;60 menit, dengan waktu tunggu terbaik di <strong style="color:#fff">${minWaitPoli}</strong> (${minWait} menit).`
+        : `<strong style="color:#F76B4F">${poliOverTarget.length} poli</strong> melebihi target waktu tunggu &lt;60 menit: <strong style="color:#fff">${poliOverTarget.join(', ')}</strong>. Waktu tunggu terlama di <strong style="color:#fff">${maxWaitPoli}</strong> (${maxWait} menit).`;
 
     // Rekomendasi berdasarkan kondisi
     const rekomendasi = parseFloat(worstScore) < 4.0
