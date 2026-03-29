@@ -380,7 +380,7 @@ function renderServicePageWithData(inputData) {
         type: 'bar',
         data: { labels: shortLabels, datasets: [{
             label: 'Skor Kepuasan', data: satVals, borderRadius: 5,
-            backgroundColor: satVals.map(v => v >= 4.4 ? '#34C98F' : v >= 4.0 ? '#4F7EF7' : '#F76B4F')
+            backgroundColor: satVals.map(v => v >= 4.5 ? '#34C98F' : v >= 4.0 ? '#4F7EF7' : '#F76B4F')
         }]},
         options: { ...baseOpts(), scales: {
             y: { min: 3, max: 5, grid: { color: '#F0EDE8' }, title: { display: true, text: 'Skor (1–5)' } },
@@ -429,7 +429,7 @@ function renderServicePageWithData(inputData) {
     const satTbody = document.getElementById('svc-satisfaction-tbody');
     if (satTbody) satTbody.innerHTML = poliFilter.map(p => {
         const d = poliData[p];
-        const status = d.score >= 4.4 ? 'Sangat Baik' : d.score >= 4.0 ? 'Baik' : 'Perlu Perbaikan';
+        const status = d.score >= 4.5 ? 'Sangat Baik' : d.score >= 4.0 ? 'Baik' : 'Perlu Perbaikan';
         const sc = d.score >= 4.0 ? 'background:#ECFDF5;color:#059669' : 'background:#FEF2F2;color:#DC2626';
         return `<tr>
             <td>${p}</td>
@@ -467,7 +467,7 @@ function renderServicePageWithData(inputData) {
     const totalNewPat = POLI_LIST.reduce((s, p) => s + poliData[p].newPatients, 0);
 
     // Status kepuasan keseluruhan
-    const satStatus = parseFloat(avgSat) >= 4.4
+    const satStatus = parseFloat(avgSat) >= 4.5
         ? `<strong style="color:#34C98F">sangat baik</strong> dan melampaui standar minimal`
         : parseFloat(avgSat) >= 4.0
         ? `<strong style="color:#4F7EF7">cukup baik</strong> namun masih ada ruang peningkatan`
