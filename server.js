@@ -6,12 +6,14 @@ const MongoClient = mongodb.MongoClient;
 const ObjectId = mongodb.ObjectId;
 const cors = require("cors");
 const session = require("express-session");
+const PORT = process.env.PORT || 3000;
 
 const app = express();
 const uri = "mongodb+srv://alfiankalani_db_user:manajemeninfobio@mib-uts.e3tztgr.mongodb.net/?appName=mib-uts";
 const client = new MongoClient(uri);
 
 // Middleware to parse JSON and serve HTML files
+app.listen(PORT, () => console.log(`Server running on ${PORT}`));
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use(express.json());
 app.use(express.static("public"));
