@@ -49,8 +49,8 @@ const BASE_BOR_WARD   = {
     'Bangsal Anggrek (Kelas 2)':65,'Bangsal Dahlia (Kelas 3)':58,'Perinatologi / Neonatus':79
 };
 const BASE_ALOS_WARD_MAP = {
-    'ICU / Intensif':5.8,'Bangsal Mawar (VIP)':4.1,'Bangsal Melati (Kelas 1)':3.8,
-    'Bangsal Anggrek (Kelas 2)':4.2,'Bangsal Dahlia (Kelas 3)':3.9,'Perinatologi / Neonatus':4.5
+    'ICU / Intensif':9.8,'Bangsal Mawar (VIP)':7.1,'Bangsal Melati (Kelas 1)':5.8,
+    'Bangsal Anggrek (Kelas 2)':7.2,'Bangsal Dahlia (Kelas 3)':6.9,'Perinatologi / Neonatus':7.5
 };
 
 // ── Baseline clinical KPI data ─────────────────────────────────
@@ -858,7 +858,7 @@ function renderEfficiencyPage() {
     makeOrUpdate('e-borTrendChart',{type:'line',data:{labels:dispLabels,datasets:[{label:'BOR (%)',data:dispBorTrend,borderColor:'#34C98F',backgroundColor:'rgba(52,201,143,0.12)',fill:true,tension:0.4,pointBackgroundColor:'#34C98F',pointRadius:5},{label:'Target Min 60%',data:dispLabels.map(()=>60),borderColor:'#FBBF24',borderDash:[5,4],borderWidth:1.5,pointRadius:0,fill:false},{label:'Target Max 85%',data:dispLabels.map(()=>85),borderColor:'#F76B4F',borderDash:[5,4],borderWidth:1.5,pointRadius:0,fill:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:10,padding:14}}},scales:{y:{min:55,max:99,grid:{color:'#F0EDE8'},ticks:{callback:v=>v+'%'}},x:{grid:{display:false}}}}});
     makeOrUpdate('e-borWardChart',{type:'bar',data:{labels:dispWards.map(w=>w.replace(/ \(Kelas \d\)/,'').replace(' (VIP)','')),datasets:[{label:'BOR (%)',data:borData,backgroundColor:borData.map((v,i)=>liveBOR[dispWards[i]]?'#A78BF5':v>85?'#F76B4F':v>=60?'#34C98F':'#FBBF24'),borderRadius:5},{label:'Target Min 60%',data:dispWards.map(()=>60),type:'line',borderColor:'#FBBF24',borderDash:[5,4],borderWidth:2,pointRadius:0,fill:false},{label:'Target Max 85%',data:dispWards.map(()=>85),type:'line',borderColor:'#F76B4F',borderDash:[5,4],borderWidth:2,pointRadius:0,fill:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:10,padding:14}}},scales:{y:{min:55,max:100,grid:{color:'#F0EDE8'}},x:{grid:{display:false}}}}});
     makeOrUpdate('e-alosTrendChart',{type:'line',data:{labels:dispLabels,datasets:[{label:'ALOS (hari)',data:dispAlosTrend,borderColor:'#4F7EF7',backgroundColor:'rgba(79,126,247,0.12)',fill:true,tension:0.4,pointBackgroundColor:'#4F7EF7',pointRadius:5},{label:'Target <4 hari',data:dispLabels.map(()=>4),borderColor:'#F76B4F',borderDash:[5,4],borderWidth:1.5,pointRadius:0,fill:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:10,padding:14}}},scales:{y:{min:2,max:7,grid:{color:'#F0EDE8'}},x:{grid:{display:false}}}}});
-    makeOrUpdate('e-alosWardChart',{type:'bar',data:{labels:dispWards.map(w=>w.split(' ').slice(0,2).join(' ')),datasets:[{label:'ALOS (hari)',data:alosData,backgroundColor:alosData.map((v,i)=>liveALOS[dispWards[i]]?'#A78BF5':v>4?'#F76B4F':v>3.5?'#FBBF24':'#34C98F'),borderRadius:5},{label:'Target 4 hari',data:dispWards.map(()=>4),type:'line',borderColor:'#4F7EF7',borderDash:[5,4],borderWidth:2,pointRadius:0,fill:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:10,padding:14}}},scales:{y:{beginAtZero:true,max:8,grid:{color:'#F0EDE8'}},x:{grid:{display:false}}}}});
+    makeOrUpdate('e-alosWardChart',{type:'bar',data:{labels:dispWards.map(w=>w.split(' ').slice(0,2).join(' ')),datasets:[{label:'ALOS (hari)',data:alosData,backgroundColor:alosData.map((v,i)=>liveALOS[dispWards[i]]?'#A78BF5':v>9?'#F76B4F':v<6?'#FBBF24':'#34C98F'),borderRadius:5},{label:'Target Min 6 hari',data:dispWards.map(()=>6),type:'line',borderColor:'#FBBF24',borderDash:[5,4],borderWidth:2,pointRadius:0,fill:false},{label:'Target Max 9 hari',data:dispWards.map(()=>9),type:'line',borderColor:'#F76B4F',borderDash:[5,4],borderWidth:2,pointRadius:0,fill:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:10,padding:14}}},scales:{y:{beginAtZero:true,max:12,grid:{color:'#F0EDE8'}},x:{grid:{display:false}}}}});
 
     // ── Tabel BOR & ALOS ──────────────────────────────────────────
     const borTbody = document.getElementById('eff-bor-tbody');
@@ -875,8 +875,8 @@ function renderEfficiencyPage() {
     if (alosTbody) alosTbody.innerHTML = dispWards.map((w,i) => {
         const alos = alosData[i];
         const liveTag = liveALOS[w] ? ' <span style="font-size:10px;color:#A78BF5">●live</span>' : '';
-        const status = alos>4 ? '<span class="td-pill" style="background:#FEF2F2;color:#DC2626">Melebihi Target</span>'
-                     : alos>3.5 ? '<span class="td-pill" style="background:#FFFBEB;color:#D97706">Hampir Tercapai</span>'
+        const status = alos>9 ? '<span class="td-pill" style="background:#FEF2F2;color:#DC2626">Melebihi Target</span>'
+                     : alos<6 ? '<span class="td-pill" style="background:#FFFBEB;color:#D97706">Hampir Tercapai</span>'
                      : '<span class="td-pill" style="background:#ECFDF5;color:#059669">Tercapai</span>';
         return `<tr><td>${w}${liveTag}</td><td>${alos}</td><td>${status}</td></tr>`;
     }).join('');
