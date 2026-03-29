@@ -205,6 +205,7 @@ function fmtM(val) { return val>=1000 ? 'Rp '+(val/1000).toFixed(1)+' M' : 'Rp '
 // Store computed wait data globally so home page can reuse it
 let _svcWaitData = null;
 let _svcNewPatientData = null;
+let _svcAvgSatisfaction = null; // add this line
 
 function renderHomeWaitChart() {
     const labels = _svcWaitData ? _svcWaitData.poliFilter : POLI_LIST;
@@ -270,7 +271,11 @@ function renderHomePage() {
     const homeBor = document.getElementById('home-bor');
     if (homeBor) { homeBor.textContent = BASE_BOR_TREND[6]+'%'; document.getElementById('home-bor-sub').textContent = 'Kapasitas Maret 2026'; }
     const homeSat = document.getElementById('home-satisfaction');
-    if (homeSat) { homeSat.textContent = '4,5/5'; document.getElementById('home-satisfaction-sub').textContent = 'Berdasarkan survei pasien'; }
+    if (homeSat) {
+    const satDisplay = _svcAvgSatisfaction ? _svcAvgSatisfaction + '/5' : '4.5/5';
+    homeSat.textContent = satDisplay;
+    document.getElementById('home-satisfaction-sub').textContent = 'Berdasarkan survei pasien';
+    }
 
     const baseUnit = MONTH_NUMS.reduce((acc,m)=>{const b=BASE_FINANCE[m];acc.rj+=b.rj;acc.ri+=b.ri;acc.fa+=b.fa;acc.ll+=b.ll;return acc;},{rj:0,ri:0,fa:0,ll:0});
     makeOrUpdate('h-financeChart',{type:'doughnut',data:{labels:['Rawat Jalan','Rawat Inap','Farmasi','Loket & Lain'],datasets:[{data:[baseUnit.rj,baseUnit.ri,baseUnit.fa,baseUnit.ll],backgroundColor:palette,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:14}}}}});
@@ -455,6 +460,8 @@ function renderServicePageWithData(inputData) {
     // ── Insight Kualitas Layanan (dinamis) ────────────────────────
     const allSat      = POLI_LIST.map(p => poliData[p].score);
     const avgSat      = (allSat.reduce((a, b) => a + b, 0) / allSat.length).toFixed(1);
+    _svcAvgSatisfaction = avgSat; // add this line
+    renderHomePage();              // add this line — refresh home with new value
     const bestPoli    = POLI_LIST[allSat.indexOf(Math.max(...allSat))];
     const worstPoli   = POLI_LIST[allSat.indexOf(Math.min(...allSat))];
     const worstScore  = Math.min(...allSat).toFixed(1);
