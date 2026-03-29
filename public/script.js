@@ -209,7 +209,16 @@ let _svcNewPatientData = null;
 function renderHomeWaitChart() {
     const labels = _svcWaitData ? _svcWaitData.poliFilter : POLI_LIST;
     const vals   = _svcWaitData ? _svcWaitData.waitVals   : POLI_LIST.map(p => BASE_WAIT[p] || 0);
-    makeOrUpdate('h-waitChart',{type:'bar',data:{labels,datasets:[{label:'Menit',data:vals,backgroundColor:'#4F7EF7',borderRadius:5}]},options:{...baseOpts(),indexAxis:'y',scales:{x:{grid:{display:false}},y:{grid:{display:false}}}}});
+    makeOrUpdate('h-waitChart',{type:'bar',
+        data:{
+            labels,
+            datasets:[{
+                label:'Menit',
+                data:vals,
+                backgroundColor: vals.map(v => v > 30 ? '#F76B4F' : '#4F7EF7'),
+                borderRadius:5}]
+            },
+            options:{...baseOpts(),indexAxis:'y',scales:{x:{grid:{display:false}},y:{grid:{display:false}}}}});
 }
 
 
