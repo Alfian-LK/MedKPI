@@ -46,7 +46,7 @@ const BASE_BOR_TREND  = {1:70,2:65,3:74,4:76,5:75,6:78};
 const BASE_ALOS_TREND = {1:4.8,2:5.2,3:4.5,4:4.4,5:4.3,6:4.3};
 const BASE_BOR_WARD   = {
     'ICU / Intensif':92,'Bangsal Mawar (VIP)':85,'Bangsal Melati (Kelas 1)':80,
-    'Bangsal Anggrek (Kelas 2)':75,'Bangsal Dahlia (Kelas 3)':72,'Perinatologi / Neonatus':79
+    'Bangsal Anggrek (Kelas 2)':65,'Bangsal Dahlia (Kelas 3)':58,'Perinatologi / Neonatus':79
 };
 const BASE_ALOS_WARD_MAP = {
     'ICU / Intensif':5.8,'Bangsal Mawar (VIP)':4.1,'Bangsal Melati (Kelas 1)':3.8,
@@ -826,11 +826,11 @@ function renderEfficiencyPage() {
     const borEl = document.getElementById('eff-bor');
     if (borEl) {
         borEl.textContent = avgBOR + '%';
-        document.getElementById('eff-bor-sub').innerHTML = avgBOR>=75&&avgBOR<=85
-            ? '<span class="kpi-badge badge-up">Ideal</span> Rentang 75–85%'
+        document.getElementById('eff-bor-sub').innerHTML = avgBOR>=60&&avgBOR<=85
+            ? '<span class="kpi-badge badge-up">Ideal</span> Rentang 60–85%'
             : avgBOR>85
             ? '<span class="kpi-badge badge-down">Kritis</span> Di atas 85%'
-            : '<span class="kpi-badge badge-warn">Rendah</span> Di bawah 75%';
+            : '<span class="kpi-badge badge-warn">Rendah</span> Di bawah 60%';
     }
     const alosEl = document.getElementById('eff-alos');
     if (alosEl) {
@@ -855,8 +855,8 @@ function renderEfficiencyPage() {
     const dispBorTrend  = month==='all' ? mergedBORTrend()  : [mergedBORTrend()[parseInt(month)-1]];
     const dispAlosTrend = month==='all' ? mergedALOSTrend() : [mergedALOSTrend()[parseInt(month)-1]];
 
-    makeOrUpdate('e-borTrendChart',{type:'line',data:{labels:dispLabels,datasets:[{label:'BOR (%)',data:dispBorTrend,borderColor:'#34C98F',backgroundColor:'rgba(52,201,143,0.12)',fill:true,tension:0.4,pointBackgroundColor:'#34C98F',pointRadius:5},{label:'Target Min 75%',data:dispLabels.map(()=>75),borderColor:'#FBBF24',borderDash:[5,4],borderWidth:1.5,pointRadius:0,fill:false},{label:'Target Max 85%',data:dispLabels.map(()=>85),borderColor:'#F76B4F',borderDash:[5,4],borderWidth:1.5,pointRadius:0,fill:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:10,padding:14}}},scales:{y:{min:55,max:99,grid:{color:'#F0EDE8'},ticks:{callback:v=>v+'%'}},x:{grid:{display:false}}}}});
-    makeOrUpdate('e-borWardChart',{type:'bar',data:{labels:dispWards.map(w=>w.replace(/ \(Kelas \d\)/,'').replace(' (VIP)','')),datasets:[{label:'BOR (%)',data:borData,backgroundColor:borData.map((v,i)=>liveBOR[dispWards[i]]?'#A78BF5':v>85?'#F76B4F':v>=75?'#34C98F':'#FBBF24'),borderRadius:5},{label:'Target Min 75%',data:dispWards.map(()=>75),type:'line',borderColor:'#FBBF24',borderDash:[5,4],borderWidth:2,pointRadius:0,fill:false},{label:'Target Max 85%',data:dispWards.map(()=>85),type:'line',borderColor:'#F76B4F',borderDash:[5,4],borderWidth:2,pointRadius:0,fill:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:10,padding:14}}},scales:{y:{min:55,max:100,grid:{color:'#F0EDE8'}},x:{grid:{display:false}}}}});
+    makeOrUpdate('e-borTrendChart',{type:'line',data:{labels:dispLabels,datasets:[{label:'BOR (%)',data:dispBorTrend,borderColor:'#34C98F',backgroundColor:'rgba(52,201,143,0.12)',fill:true,tension:0.4,pointBackgroundColor:'#34C98F',pointRadius:5},{label:'Target Min 60%',data:dispLabels.map(()=>60),borderColor:'#FBBF24',borderDash:[5,4],borderWidth:1.5,pointRadius:0,fill:false},{label:'Target Max 85%',data:dispLabels.map(()=>85),borderColor:'#F76B4F',borderDash:[5,4],borderWidth:1.5,pointRadius:0,fill:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:10,padding:14}}},scales:{y:{min:55,max:99,grid:{color:'#F0EDE8'},ticks:{callback:v=>v+'%'}},x:{grid:{display:false}}}}});
+    makeOrUpdate('e-borWardChart',{type:'bar',data:{labels:dispWards.map(w=>w.replace(/ \(Kelas \d\)/,'').replace(' (VIP)','')),datasets:[{label:'BOR (%)',data:borData,backgroundColor:borData.map((v,i)=>liveBOR[dispWards[i]]?'#A78BF5':v>85?'#F76B4F':v>=60?'#34C98F':'#FBBF24'),borderRadius:5},{label:'Target Min 60%',data:dispWards.map(()=>60),type:'line',borderColor:'#FBBF24',borderDash:[5,4],borderWidth:2,pointRadius:0,fill:false},{label:'Target Max 85%',data:dispWards.map(()=>85),type:'line',borderColor:'#F76B4F',borderDash:[5,4],borderWidth:2,pointRadius:0,fill:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:10,padding:14}}},scales:{y:{min:55,max:100,grid:{color:'#F0EDE8'}},x:{grid:{display:false}}}}});
     makeOrUpdate('e-alosTrendChart',{type:'line',data:{labels:dispLabels,datasets:[{label:'ALOS (hari)',data:dispAlosTrend,borderColor:'#4F7EF7',backgroundColor:'rgba(79,126,247,0.12)',fill:true,tension:0.4,pointBackgroundColor:'#4F7EF7',pointRadius:5},{label:'Target <4 hari',data:dispLabels.map(()=>4),borderColor:'#F76B4F',borderDash:[5,4],borderWidth:1.5,pointRadius:0,fill:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:10,padding:14}}},scales:{y:{min:2,max:7,grid:{color:'#F0EDE8'}},x:{grid:{display:false}}}}});
     makeOrUpdate('e-alosWardChart',{type:'bar',data:{labels:dispWards.map(w=>w.split(' ').slice(0,2).join(' ')),datasets:[{label:'ALOS (hari)',data:alosData,backgroundColor:alosData.map((v,i)=>liveALOS[dispWards[i]]?'#A78BF5':v>4?'#F76B4F':v>3.5?'#FBBF24':'#34C98F'),borderRadius:5},{label:'Target 4 hari',data:dispWards.map(()=>4),type:'line',borderColor:'#4F7EF7',borderDash:[5,4],borderWidth:2,pointRadius:0,fill:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:10,padding:14}}},scales:{y:{beginAtZero:true,max:8,grid:{color:'#F0EDE8'}},x:{grid:{display:false}}}}});
 
@@ -866,7 +866,7 @@ function renderEfficiencyPage() {
         const cap = BED_CAPACITY[w], bor = borData[i], terisi = Math.round(bor/100*cap);
         const liveTag = liveBOR[w] ? ' <span style="font-size:10px;color:#A78BF5">●live</span>' : '';
         const status = bor>85 ? '<span class="td-pill" style="background:#FEF2F2;color:#DC2626">Kritis</span>'
-                     : bor>=75 ? '<span class="td-pill" style="background:#ECFDF5;color:#059669">Ideal</span>'
+                     : bor>=60 ? '<span class="td-pill" style="background:#ECFDF5;color:#059669">Ideal</span>'
                      : '<span class="td-pill" style="background:#FFFBEB;color:#D97706">Di Bawah Target</span>';
         return `<tr><td>${w}${liveTag}</td><td>${cap}</td><td>${terisi}</td><td>${bor}%</td><td>${status}</td></tr>`;
     }).join('');
@@ -883,8 +883,8 @@ function renderEfficiencyPage() {
 
     // ── Insight Operasional (dinamis) ─────────────────────────────
     const critWards    = dispWards.filter((w,i) => borData[i] > 85);
-    const lowBORWards  = dispWards.filter((w,i) => borData[i] < 75);
-    const idealBORWards= dispWards.filter((w,i) => borData[i] >= 75 && borData[i] <= 85);
+    const lowBORWards  = dispWards.filter((w,i) => borData[i] < 60);
+    const idealBORWards= dispWards.filter((w,i) => borData[i] >= 60 && borData[i] <= 85);
     const highALOS     = dispWards.filter((w,i) => alosData[i] > 4);
     const goodALOS     = dispWards.filter((w,i) => alosData[i] <= 4);
     const effInsight   = document.getElementById('eff-insight-text');
@@ -893,9 +893,9 @@ function renderEfficiencyPage() {
 
         const borStatus = avgBOR > 85
             ? `<strong style="color:#F76B4F">kritis (${avgBOR}%)</strong> : melampaui batas atas 85%, kapasitas perlu ditambah atau pasien dialihkan`
-            : avgBOR >= 75
-            ? `<strong style="color:#34C98F">ideal (${avgBOR}%)</strong> karena berada dalam rentang optimal 75–85%`
-            : `<strong style="color:#FBBF24">rendah (${avgBOR}%)</strong> : di bawah target minimum 75%, utilisasi belum optimal`;
+            : avgBOR >= 60
+            ? `<strong style="color:#34C98F">ideal (${avgBOR}%)</strong> karena berada dalam rentang optimal 60–85%`
+            : `<strong style="color:#FBBF24">rendah (${avgBOR}%)</strong> : di bawah target minimum 60%, utilisasi belum optimal`;
 
         let borDetail = '';
         if (critWards.length > 0)
