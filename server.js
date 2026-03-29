@@ -9,7 +9,7 @@ const session = require("express-session");
 const PORT = process.env.PORT || 3000;
 
 const app = express();
-const uri = "mongodb+srv://alfiankalani_db_user:manajemeninfobio@mib-uts.e3tztgr.mongodb.net/?appName=mib-uts";
+const uri = process.env.MONGO_URI;
 const client = new MongoClient(uri);
 
 // Middleware to parse JSON and serve HTML files
