@@ -3,7 +3,7 @@
 // ══════════════════════════════════════════════════════════════
 const STORAGE_KEY   = 'medcoreData_v2';   // data utama (BOR, ALOS, finance, dll)
 const DB_KEY        = 'medcore_visits';   // data khusus readmission
-const API_BASE = window.location.origin;
+const API_BASE      = "https://medkpi-production.up.railway.app";
 
 const MONTHS      = ['Januari','Februari','Maret','April','Mei','Juni'];
 const MONTH_NUMS  = [1,2,3,4,5,6];
