@@ -283,7 +283,7 @@ function renderServicePage() {
 
 async function fetchWaitFromMongo() {
     try {
-        const res = await fetch('${API_BASE}/data', { credentials: 'include' });
+        const res = await fetch(`${API_BASE}/data`, { credentials: 'include' });
         if (!res.ok) throw new Error('Server error');
         const mongoData = await res.json();
         const local = getData();
@@ -620,7 +620,7 @@ function renderHRPage() {
 
 async function fetchHRFromMongo() {
     try {
-        const res = await fetch('${API_BASE}/data', { credentials: 'include' });
+        const res = await fetch(`${API_BASE}/data`, { credentials: 'include' });
         if (!res.ok) throw new Error('Server error');
         const mongoData = await res.json();
         // Merge with localStorage (localStorage may have records not yet in mongo)
@@ -1305,7 +1305,7 @@ async function handleSubmit(e){
       console.log('MongoDB update success:', existingMongoId);
     } else {
     // INSERT new record in MongoDB
-    const res = await fetch('${API_BASE}/insert', {
+    const res = await fetch(`${API_BASE}/insert`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -1424,7 +1424,7 @@ async function submitLogin() {
     const password = document.getElementById('loginPassword').value;
     const errEl = document.getElementById('loginError');
     try {
-        const res = await fetch('${API_BASE}/login', {
+        const res = await fetch(`${API_BASE}/login`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             credentials: 'include', body: JSON.stringify({ username, password })
         });
@@ -1442,14 +1442,14 @@ async function submitLogin() {
 }
 
 async function doLogout() {
-    await fetch('${API_BASE}/logout', { method: 'POST', credentials: 'include' });
+    await fetch(`${API_BASE}/logout`, { method: 'POST', credentials: 'include' });
     isAdmin = false;
     showLoginPage();
 }
 
 async function checkSession() {
     try {
-        const res = await fetch('${API_BASE}/me', { credentials: 'include' });
+        const res = await fetch(`${API_BASE}/me`, { credentials: 'include' });
         const data = await res.json();
         if (data.isAdmin) { isAdmin = true; showDashboard(); }
         else { showLoginPage(); }
